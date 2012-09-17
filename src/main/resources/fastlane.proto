@@ -1,0 +1,18 @@
+option java_package = "com.inmobi.dw.fastlane.proto";
+option java_generate_equals_and_hash = true;
+
+message Node {
+  required string table_name = 1;
+  repeated string field = 2;
+ }
+
+message JoinNode {
+  required Node lhs = 1;
+  required Node rhs = 2;
+ }
+
+ message Query {
+  repeated Node select = 1;
+  required Node keyNode = 2;
+  repeated JoinNode JoinChain = 3;
+ }

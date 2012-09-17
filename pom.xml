@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.inmobi.dw.fastlane</groupId>
+  <artifactId>fastlane</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>fastlane</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+	<distributionManagement>
+        <repository>
+            <id>InMobiRepository</id>
+            <name>InMobi Internal Repository</name>
+            <url>http://build.corp.inmobi.com/nexus/content/repositories/snapshots</url>
+        </repository>
+    </distributionManagement>
+    
+	<repositories>
+	    <repository>
+			<id>inmobo.repo</id>
+			<url>http://build.corp.inmobi.com/nexus/content/repositories/snapshots</url>
+			<name>Inmobi repository</name>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>hsqldb.svn.sourceforge.net</id>
+			<name>hsqldb.svn.sourceforge.net</name>
+			<url>http://www.hsqldb.org/repos</url>
+		</repository>
+	</repositories>
+	
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+		<groupId>org.hsqldb</groupId>
+		<artifactId>hsqldb</artifactId>
+		<version>2.2.9</version>
+	</dependency>
+    <dependency>
+         <groupId>com.google.protobuf</groupId>
+         <artifactId>protobuf-java</artifactId>
+         <version>2.4.1</version>
+     </dependency>	
+  </dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<debug>true</debug>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-5</version>
+				<configuration>
+					<descriptors>
+					    <descriptors>src/assembly/assembly.xml</descriptors>
+					</descriptors>
+					<finalName>fastlane</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+						<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="target/src_gen/proto/java" />
+								<exec executable="protoc">
+									<arg value="--java_out=target/src_gen/proto/java" />
+									<arg value="src/main/resources/fastlane.proto" />
+								</exec>
+							</tasks>
+							<sourceRoot>target/src_gen</sourceRoot>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
